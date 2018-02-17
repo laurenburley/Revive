@@ -142,6 +142,12 @@ OVR_PUBLIC_FUNCTION(ovrHmdDesc) ovr_GetHmdDesc(ovrSession session)
 			size.Height * (MATH_FLOAT_PIOVER4 / eyeFov.GetVerticalFovRadians()));
 
 		eyeDesc.HmdToEyePose = OVR::Posef::Identity();
+		if (i == ovrEye_Right)
+		{
+			OVR::Matrix4f offset = REM::Matrix4f(transform.Left).Inverted() * REM::Matrix4f(transform.Right);
+			//eyeDesc.HmdToEyePose.Orientation = OVR::Quatf(offset);
+			eyeDesc.HmdToEyePose.Position = offset.GetTranslation();
+		}
 
 		// Update the HMD descriptor
 		desc.DefaultEyeFov[i] = eyeFov;
